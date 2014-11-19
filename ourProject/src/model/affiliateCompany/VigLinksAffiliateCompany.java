@@ -28,7 +28,7 @@ public class VigLinksAffiliateCompany extends AbstractAffiliateCompany implement
 		try {
 			URLEncoder.encode(destinationUrl, "UTF-8");
 			//retUrl = deepLinkUrl +"?key="+subscriberId+"&out="+destinationUrl+"&loc=hufshatleida.co.il&format=text";
-			retUrl = deepLinkUrl +"?key="+subscriber.getSubscriberId()+"&out="+destinationUrl;
+			retUrl = deepLinkUrl +"?key="+subscriber.getAffiliationSId()+"&out="+destinationUrl;
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

@@ -34,7 +34,11 @@ public class ShopsProvider {
 		shoppingSites.put("www.nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
 		shoppingSites.put("il.nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
 		shoppingSites.put("nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
-
+		
+		shoppingSites.put("alexandalexa.com", new ShoppingSite("alexandalexa",".alexandalexa.com","alexandalexa description","alexandalexa.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
+		shoppingSites.put("gap.com", new ShoppingSite("gap",".gap.com","gap description","gap.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
+		shoppingSites.put("ebay.com", new ShoppingSite("ebay",".ebay.com","ebayt description","ebay.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
+				
 		// for testing
 		shoppingSites.put("google.com", new ShoppingSite("Google com",".google.com","...description","google.gif",null,2,2));//in viglinks it written 8% (-25%)
 		shoppingSites.put("google.co.il", new ShoppingSite("Google co il",".google.co.il","...description","google.gif",null,2,2));//in viglinks it written 8% (-25%)
