@@ -21,7 +21,8 @@ import org.apache.log4j.MDC;
 
 import validators.IParametersValidator;
 import validators.ParametersValidator;
-import dao.DatabaseManager;
+import dao.ShopsProvider;
+import dao.SubscribersProvider;
 
 /**
  * Servlet implementation class redirectServlet
@@ -50,16 +51,19 @@ public class RedirectServlet extends HttpServlet {
 	private void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) {
 		
+		String fullPath = request.getPathInfo();
+
 		//---------------------------------------------------------------------
 		// TODO configure log4j to add this session id to all logs for trace purposes
-		String uniqueSessionId = java.util.UUID.randomUUID().toString();
+		String uniqueClickId = java.util.UUID.randomUUID().toString();
 		// TODO put the session id into the Mapped Diagnostic Context of log4j 
 		// see: https://blog.oio.de/2010/11/09/logging-additional-information-like-sessionid-in-every-log4j-message/
 		// note that MDC is thread safe as it is being ThreadLocal, so no need to worry
-		MDC.put("sessionId", uniqueSessionId);
+		MDC.put("clickId", uniqueClickId);
+		// TODO put this uniqueClickId also on the request to the affiliate
+		logger.info("new request: " + fullPath);
 		//---------------------------------------------------------------------
 		
-		String fullPath = request.getPathInfo();
 		String qString = request.getQueryString();//uu= destination url , kk = subscriber key
 		if(qString != null && qString!=""){
 			fullPath = fullPath + "?" + qString;
@@ -78,16 +82,15 @@ public class RedirectServlet extends HttpServlet {
 			
 			// fectch the subscriber
 			// (in case of no match, the method returns a default subscriber and logs, so we do not need to check for that case)
-			ISubscriber subscriber = DatabaseManager.findSubscriberObject(subcriberKey);
+			ISubscriber subscriber = SubscribersProvider.getProvider().getSubscriber(subcriberKey);
 						
 			//get shopping site data
 			//String destinationUrl = request.getParameter("uu");
 			String destinationUrl = urlAnalayzer.getDestinationUrl();
 			logger.debug("destinationUrl="+destinationUrl);
 			
-			IShoppingSite  shoppingSite = DatabaseManager.findShoppingSiteObject(destinationUrl);
-			//TODO in case of no shopping site try to use viglinks API or other APIs
-
+			// (in case of no match, method will return null but we are ok, there is a relevant resolver for that as well)
+			IShoppingSite  shoppingSite = ShopsProvider.getProvider().getShoppingSite(destinationUrl);
 			
 			//----------------------------------
 			// build the redirect url

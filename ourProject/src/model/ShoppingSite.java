@@ -1,6 +1,7 @@
 package model;
 
 import logic.IRedirectResolver;
+import logic.RedirectResolver;
 import model.affiliateCompany.IAffiliateCompany;
 
 public class ShoppingSite implements IShoppingSite {
@@ -113,7 +114,10 @@ public class ShoppingSite implements IShoppingSite {
 
 	@Override
 	public IRedirectResolver getRedirectResolver() {
-		// return the redirect resolver that is set by the shop affiliator
+		// return the redirect resolver that is set by the shop affiliator or NoMatchResolver
+		if(getAffiliateCompany() == null) {
+			return RedirectResolver.NoShopMatch;
+		}
 		return getAffiliateCompany().getRedirectResolver();
 	}
   

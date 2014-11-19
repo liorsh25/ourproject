@@ -6,7 +6,6 @@ public class RestLikeUrlAnalyzer extends UrlAnalyzer {
 	private String destinationUr = null;
 	
 	public RestLikeUrlAnalyzer(String urlStringToAnalayz) {
-		super(urlStringToAnalayz);
 		restArr = urlStringToAnalayz.split("/");
 		String[] destinationUrlArr = urlStringToAnalayz.split("/@u=");
 		if(destinationUrlArr.length == 2){
