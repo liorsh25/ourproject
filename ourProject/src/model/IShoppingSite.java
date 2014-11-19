@@ -1,5 +1,6 @@
 package model;
 
+import logic.IRedirectResolver;
 import model.affiliateCompany.IAffiliateCompany;
 
 public interface IShoppingSite {
@@ -73,5 +74,10 @@ public interface IShoppingSite {
 	 * @param logoImage the logoImage to set
 	 */
 	public abstract void setLogoImage(String logoImage);
+
+	/**
+	 * @return the resolver matching this shop, for creating redirect url
+	 */
+	public abstract IRedirectResolver getRedirectResolver();
 
 }

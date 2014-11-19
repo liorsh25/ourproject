@@ -1,6 +1,5 @@
-/dao/
-/helpers/
-/logic/
 /model/
 /servlets/
-/validators/
+/logic/
+/dao/
+/helpers/

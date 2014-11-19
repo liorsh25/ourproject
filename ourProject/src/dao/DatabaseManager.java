@@ -6,8 +6,8 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import model.ISubscriber;
 import model.IShoppingSite;
+import model.ISubscriber;
 import model.ShoppingSite;
 import model.Subscriber;
 import model.affiliateCompany.CJAffiliateCompany;
@@ -15,7 +15,16 @@ import model.affiliateCompany.GrouponAffiliateCompany;
 import model.affiliateCompany.IAffiliateCompany;
 import model.affiliateCompany.VigLinksAffiliateCompany;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 public class DatabaseManager {
+	
+	static final Logger logger = LogManager.getLogger(DatabaseManager.class);
+
+	// TODO populate this default subscriber with relevant data
+	private static final ISubscriber defaultSubscriber = 
+			new Subscriber("DEFAULT","BLOG","<numbers>","<code>");	
 	
 	private static Map<String,IShoppingSite> shoppingSites = new HashMap<String,IShoppingSite>();
 	private static Map<String,ISubscriber> subscribers = new HashMap<String,ISubscriber>();
@@ -59,8 +68,8 @@ public class DatabaseManager {
 		*/
 		//The affiliateCompany will be viglinks
 		IAffiliateCompany viglinks = new VigLinksAffiliateCompany("vigLinks","http://redirect.viglink.com");
-		IAffiliateCompany groupon = new GrouponAffiliateCompany("groupon","http://t.groupon.com/r?tsToken=IL_AFF_0_202128_214281_0&url=[[CURRENT_URL]]%2F%3FCID%3DIL_AFF_5600_225_5383_1%26nlp%26utm_source%3DGPN%26utm_medium%3Dafl%26utm_campaign%3D202128&wid=http://tormim.com");
-		IAffiliateCompany cj = new CJAffiliateCompany("cj","http://www.anrdoezrs.net/links");
+//		IAffiliateCompany groupon = new GrouponAffiliateCompany("groupon","http://t.groupon.com/r?tsToken=IL_AFF_0_202128_214281_0&url=[[CURRENT_URL]]%2F%3FCID%3DIL_AFF_5600_225_5383_1%26nlp%26utm_source%3DGPN%26utm_medium%3Dafl%26utm_campaign%3D202128&wid=http://tormim.com");
+//		IAffiliateCompany cj = new CJAffiliateCompany("cj","http://www.anrdoezrs.net/links");
 
 		//The shop will be Next
 		shoppingSites.put("il.nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
@@ -84,6 +93,19 @@ public class DatabaseManager {
 	}
 
 	public static ISubscriber findSubscriberObject(String subcriberKey) {
-		return subscribers.get(subcriberKey);
+		ISubscriber subscriber = null;
+		if(subcriberKey == null || subcriberKey.isEmpty()) {
+			logger.error("subcriberKey not provided, using default subcriberKey, user will not track this redirect");
+		}
+		else {
+			subscriber = subscribers.get(subcriberKey);
+			if(subscriber == null) {
+				logger.error("subcriber not foind for subcriberKey = " + subcriberKey + " - using default subcriberKey, user will not track this redirect");				
+			}
+		}
+		if(subscriber == null) {
+			subscriber = defaultSubscriber;
+		}
+		return subscriber;
 	}
 }

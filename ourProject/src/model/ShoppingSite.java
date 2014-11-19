@@ -1,5 +1,6 @@
 package model;
 
+import logic.IRedirectResolver;
 import model.affiliateCompany.IAffiliateCompany;
 
 public class ShoppingSite implements IShoppingSite {
@@ -10,11 +11,7 @@ public class ShoppingSite implements IShoppingSite {
 	private IAffiliateCompany affiliateCompany = null;
 	private double minPercentage = 0;
 	private double maxPercentage = 0;
-	private String logoImage = null;
-	
-	
-	
-	
+	private String logoImage = null;	
 	
 	
 	public ShoppingSite(String name, String domain, String description,
@@ -112,6 +109,12 @@ public class ShoppingSite implements IShoppingSite {
 	 */
 	public void setLogoImage(String logoImage) {
 		this.logoImage = logoImage;
+	}
+
+	@Override
+	public IRedirectResolver getRedirectResolver() {
+		// return the redirect resolver that is set by the shop affiliator
+		return getAffiliateCompany().getRedirectResolver();
 	}
   
 }

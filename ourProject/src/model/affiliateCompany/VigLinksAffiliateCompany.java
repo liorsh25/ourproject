@@ -2,12 +2,18 @@ package model.affiliateCompany;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
-public class VigLinksAffiliateCompany extends AbstractAffiliateCompany {
+import logic.IRedirectResolver;
+import model.IShoppingSite;
+import model.ISubscriber;
+
+// TODO move the resolver logic into "TemplatePlaceHolderResolver"
+
+public class VigLinksAffiliateCompany extends AbstractAffiliateCompany implements IRedirectResolver {
 
 	public VigLinksAffiliateCompany(String name, String deepLinkUrl) {
 		super(name, deepLinkUrl);
+		setRedirectResolver(this /*temporarily we represent the resolver of ourself*/);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -17,12 +23,12 @@ public class VigLinksAffiliateCompany extends AbstractAffiliateCompany {
 	 * Example:http://api.viglink.com/api/click?key=3a0aad395b02941d447b234383bed775&out=<URL>&loc=<URL>[&cuid=<str>][&format=go|jsonp|txt][&jsonp=<str>][&reaf=1][&ref=<URL>][&title=<str>][&txt=<str>]
 	 */
 	@Override
-	public String calcAffiliatedUrl(String subscriberId, String destinationUrl) {
+	public String buildUrl(String destinationUrl, ISubscriber subscriber, IShoppingSite shoppingSite) {
 		String retUrl = destinationUrl;
 		try {
 			URLEncoder.encode(destinationUrl, "UTF-8");
 			//retUrl = deepLinkUrl +"?key="+subscriberId+"&out="+destinationUrl+"&loc=hufshatleida.co.il&format=text";
-			retUrl = deepLinkUrl +"?key="+subscriberId+"&out="+destinationUrl;
+			retUrl = deepLinkUrl +"?key="+subscriber.getSubscriberId()+"&out="+destinationUrl;
 			
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

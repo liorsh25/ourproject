@@ -1,8 +1,12 @@
 package model.affiliateCompany;
 
+import logic.IRedirectResolver;
+
 public interface IAffiliateCompany {
 
-	public abstract String calcAffiliatedUrl(String subscriberId,String destinationUrl);
+	// this method is replaced with the Resolver approach
+	// TODO delete
+//	public abstract String calcAffiliatedUrl(String subscriberId,String destinationUrl);
 
 	// TODO: add here abstruct API methods (get affiliate data by
 	// dates/revenue...
@@ -14,5 +18,7 @@ public interface IAffiliateCompany {
 	public String getDeepLinkUrl();
 
 	public void setDeepLinkUrl(String deepLinkUrl);
+
+	public IRedirectResolver getRedirectResolver();
 
 }

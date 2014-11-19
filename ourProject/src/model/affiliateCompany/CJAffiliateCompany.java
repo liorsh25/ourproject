@@ -7,10 +7,4 @@ public class CJAffiliateCompany extends AbstractAffiliateCompany {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public String calcAffiliatedUrl(String subscriberId, String destinationUrl) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
