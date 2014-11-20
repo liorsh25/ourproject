@@ -54,13 +54,13 @@ public class RedirectServlet extends HttpServlet {
 		String fullPath = request.getPathInfo();
 
 		//---------------------------------------------------------------------
-		// TODO configure log4j to add this session id to all logs for trace purposes
+		//log4j to add this session id to all logs for trace purposes
 		String uniqueClickId = java.util.UUID.randomUUID().toString();
-		// TODO put the session id into the Mapped Diagnostic Context of log4j 
+		// put the click id into the Mapped Diagnostic Context of log4j 
 		// see: https://blog.oio.de/2010/11/09/logging-additional-information-like-sessionid-in-every-log4j-message/
 		// note that MDC is thread safe as it is being ThreadLocal, so no need to worry
 		MDC.put("clickId", uniqueClickId);
-		// TODO put this uniqueClickId also on the request to the affiliate
+		// TODO put this uniqueClickId also on the request to the affiliate (maybe ??)
 		logger.info("new request: " + fullPath);
 		//---------------------------------------------------------------------
 		
@@ -92,13 +92,7 @@ public class RedirectServlet extends HttpServlet {
 			// (in case of no match, method will return null but we are ok, there is a relevant resolver for that as well)
 			IShoppingSite  shoppingSite = ShopsProvider.getProvider().getShoppingSite(destinationUrl);
 			
-			//----------------------------------
-			// build the redirect url
-			//----------------------------------
-			// [1] get the appropriate RedirectResolver
-			IRedirectResolver redirectResolver = RedirectResolver.getRedirectResolver(shoppingSite);
-			// [2] get the redirect url
-			String redirectUrl = redirectResolver.buildUrl(destinationUrl,subscriber,shoppingSite);
+			String redirectUrl = calcRedirectUrl(destinationUrl,subscriber,shoppingSite);
 			
 			logger.debug("OUT: redirectUrl="+redirectUrl);
 			try {
@@ -106,15 +100,26 @@ public class RedirectServlet extends HttpServlet {
 				response.sendRedirect(redirectUrl);
 				return;
 			} catch (IOException e) {
-				// TODO need to handle this error
-				e.printStackTrace();
+				logger.error("Problem in redirecting the user to:"+ redirectUrl,e);
 			}
 			
 		}else{
-			logger.debug("The call is not valid");
+			logger.error("The call is not valid:"+fullPath);
 
 		}
 
+	}
+
+	private String calcRedirectUrl(String destinationUrl, ISubscriber subscriber,IShoppingSite shoppingSite) {
+		String retUrl = destinationUrl;
+		//----------------------------------
+		// build the redirect url
+		//----------------------------------
+		// [1] get the appropriate RedirectResolver
+		IRedirectResolver redirectResolver = RedirectResolver.getRedirectResolver(shoppingSite);
+		// [2] get the redirect url
+		retUrl = redirectResolver.buildUrl(destinationUrl,subscriber,shoppingSite);
+		return retUrl;
 	}
 
 //EXAMPLES:
