@@ -54,6 +54,7 @@ public class ShopsProvider {
 		String manipulatedUrl = null;
 		try {
 			extractedDomainName = UrlAnalyzer.extractDomainName(url);
+			logger.debug("extractedDomainName="+extractedDomainName);
 		} catch (MalformedURLException e) {
 			logger.error("MalformedURL: " + url + " - cannot match shopping site");
 			return null;
@@ -66,6 +67,7 @@ public class ShopsProvider {
 		// this is in order to allow shop mapped domain to be "il.someshop" or "fashion.someshop"
 		manipulatedUrl = extractedDomainName;
 		while(shop == null && (manipulatedUrl = UrlAnalyzer.getUpperDomain(manipulatedUrl)) != null) {
+			logger.debug("manipulatedUrl="+manipulatedUrl);
 			shop = shoppingSites.get(manipulatedUrl);			
 		}
 
@@ -73,12 +75,15 @@ public class ShopsProvider {
 		// this is in order to allow shop mapped domain to be "google.co.il" or just "google"
 		manipulatedUrl = extractedDomainName.replace("www.", "");
 		while(shop == null && (manipulatedUrl = UrlAnalyzer.getDomainWithoutTld(manipulatedUrl)) != null) {
+			logger.debug("manipulatedUrl="+manipulatedUrl);
 			shop = shoppingSites.get(manipulatedUrl);			
 		}
 
 		if(shop == null) {
 			logger.warn("cannot find matching shop for url: " + url);
 		}
+		
+		
 		return shop;
 
 	}

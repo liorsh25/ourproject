@@ -1,28 +1,38 @@
 package helpers;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 public class RestLikeUrlAnalyzer extends UrlAnalyzer {
 
+	static final Logger logger = LogManager.getLogger(RestLikeUrlAnalyzer.class);
+
 	private String[] restArr = null;
-	private String destinationUr = null;
-	
+	private String destinationUrl = "";
+
 	public RestLikeUrlAnalyzer(String urlStringToAnalayz) {
 		restArr = urlStringToAnalayz.split("/");
 		String[] destinationUrlArr = urlStringToAnalayz.split("/@u=");
 		if(destinationUrlArr.length == 2){
-			destinationUr = destinationUrlArr[1];
-			if(destinationUr.startsWith("http")){
+			destinationUrl = destinationUrlArr[1];
+			logger.debug("destinationUrl="+ destinationUrl);
+			if(destinationUrl.startsWith("http")){
 				//for some reason remove one "/" from the http://
-				destinationUr = destinationUr.replace(":/", "://");
+				destinationUrl = destinationUrl.replace(":/", "://");
 			}else{
-				destinationUr = "http://"+destinationUr;
+				destinationUrl = "http://"+destinationUrl;
 			}
+		}else{
+			logger.error("not valid destination url:"+ 	urlStringToAnalayz );
 		}
+
+		logger.debug("destinationUrl in end of constructor:"+ destinationUrl);
 	}
 
 	@Override
 	public String getDestinationUrl() {
 		//for example: monlinks.com/r/hufsha001/ci/up/14102014/ct/@u=http://il.nextdirect.com/en/g67144s8
-		return destinationUr;
+		return destinationUrl;
 	}
 
 	@Override

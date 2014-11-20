@@ -15,7 +15,7 @@ public class SubscribersProvider {
 
 	// TODO populate this default subscriber with relevant data
 	private static final ISubscriber defaultSubscriber = 
-			new Subscriber("DEFAULT","BLOG","<numbers>","<code>");	
+			new Subscriber("DEFAULT","BLOG","DEFAULT_SUB","DEFAULT");	
 	
 	private static SubscribersProvider instance = new SubscribersProvider();
 	

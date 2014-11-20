@@ -87,10 +87,11 @@ public class RedirectServlet extends HttpServlet {
 			//get shopping site data
 			//String destinationUrl = request.getParameter("uu");
 			String destinationUrl = urlAnalayzer.getDestinationUrl();
-			logger.debug("destinationUrl="+destinationUrl);
+			logger.debug("destinationUrl="+String.valueOf(destinationUrl));
 			
 			// (in case of no match, method will return null but we are ok, there is a relevant resolver for that as well)
 			IShoppingSite  shoppingSite = ShopsProvider.getProvider().getShoppingSite(destinationUrl);
+			logger.debug("shoppingSite="+ String.valueOf(shoppingSite));
 			
 			String redirectUrl = calcRedirectUrl(destinationUrl,subscriber,shoppingSite);
 			

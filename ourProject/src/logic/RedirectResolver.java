@@ -51,5 +51,6 @@ public enum RedirectResolver implements IRedirectResolver {
 		}
 		return redirectResolver;
 	}
-		
+
+			
 }

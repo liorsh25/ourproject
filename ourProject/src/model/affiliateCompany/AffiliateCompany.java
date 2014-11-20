@@ -1,8 +1,9 @@
 package model.affiliateCompany;
 
 import logic.IRedirectResolver;
+import model.ISubscriber;
 
-public abstract  class AbstractAffiliateCompany implements IAffiliateCompany {
+public class AffiliateCompany implements IAffiliateCompany {
 
 	private String name = null;
 	protected String deepLinkUrl = null;
@@ -12,20 +13,14 @@ public abstract  class AbstractAffiliateCompany implements IAffiliateCompany {
 //TODO: maybe enum
 
 	
-	public AbstractAffiliateCompany(String name, String deepLinkUrl, IRedirectResolver redirectResolver) {
+	public AffiliateCompany(String name, String deepLinkUrl, IRedirectResolver redirectResolver) {
 		super();
 		this.name = name;
 		this.deepLinkUrl = deepLinkUrl;
 		this.redirectResolver = redirectResolver;
 	}
 	
-	public AbstractAffiliateCompany(String name, String deepLinkUrl) {
-		super();
-		this.name = name;
-		this.deepLinkUrl = deepLinkUrl;
-	}
-
-
+	
 	public String getName() {
 		return name;
 	}
@@ -55,6 +50,7 @@ public abstract  class AbstractAffiliateCompany implements IAffiliateCompany {
 		this.redirectResolver = redirectResolver;
 	}
 
-	
+
+		
 
 }
