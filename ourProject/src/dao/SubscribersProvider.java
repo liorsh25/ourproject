@@ -14,8 +14,9 @@ public class SubscribersProvider {
 	static final Logger logger = LogManager.getLogger(SubscribersProvider.class);
 
 	// TODO populate this default subscriber with relevant data
+	private static final String DEFAULT_SUB = "3a0aad395b02941d447b234383bed775";
 	private static final ISubscriber defaultSubscriber = 
-			new Subscriber("DEFAULT","BLOG","<numbers>","<code>");	
+			new Subscriber("DEFAULT","BLOG",DEFAULT_SUB,"DEFAULT");	
 	
 	private static SubscribersProvider instance = new SubscribersProvider();
 	

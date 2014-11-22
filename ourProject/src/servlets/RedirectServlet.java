@@ -51,32 +51,38 @@ public class RedirectServlet extends HttpServlet {
 	private void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		String fullPath = request.getPathInfo();
-
 		//---------------------------------------------------------------------
-		// TODO configure log4j to add this session id to all logs for trace purposes
+		//log4j to add this session id to all logs for trace purposes
 		String uniqueClickId = java.util.UUID.randomUUID().toString();
-		// TODO put the session id into the Mapped Diagnostic Context of log4j 
+		// put the click id into the Mapped Diagnostic Context of log4j 
 		// see: https://blog.oio.de/2010/11/09/logging-additional-information-like-sessionid-in-every-log4j-message/
 		// note that MDC is thread safe as it is being ThreadLocal, so no need to worry
 		MDC.put("clickId", uniqueClickId);
-		// TODO put this uniqueClickId also on the request to the affiliate
-		logger.info("new request: " + fullPath);
+		// TODO put above uniqueClickId also on the request to the affiliate (maybe ??)
 		//---------------------------------------------------------------------
+
+		// get the path that comes after the /
+		String fullPath = request.getPathInfo();
+		logger.debug("request.getPathInfo() = " + fullPath);
 		
-		String qString = request.getQueryString();//uu= destination url , kk = subscriber key
+		// this is for any additional query string that belongs to the actual site we want to go to
+		String qString = request.getQueryString();
 		if(qString != null && qString!=""){
+			logger.debug("adding request.getQueryString() = " + qString);
 			fullPath = fullPath + "?" + qString;
 		}
-		logger.debug("IN: fullPath="+fullPath);
+
+		//---------------------------------------------------------------------
+		// in production mode this shall be the first log per request
+		logger.info("IN: new request = " + fullPath);
+		//---------------------------------------------------------------------
 		
-		//validate parameters
-		if(validator.validateParameters(fullPath)){
+		IUrlAnalyzer urlAnalayzer = new RestLikeUrlAnalyzer(fullPath);
+		
+		// validate parameters and decide what to do
+		if(validator.validateParameters(fullPath, urlAnalayzer)){
 			
-			IUrlAnalyzer urlAnalayzer = new RestLikeUrlAnalyzer(fullPath);
-			
-			//get monlinks user data
-			//String subcriberKey = request.getParameter("kk");
+			// get monlinks user data
 			String subcriberKey = urlAnalayzer.getSubcriberKey();
 			logger.debug("subcriberKey="+subcriberKey);
 			
@@ -87,34 +93,53 @@ public class RedirectServlet extends HttpServlet {
 			//get shopping site data
 			//String destinationUrl = request.getParameter("uu");
 			String destinationUrl = urlAnalayzer.getDestinationUrl();
-			logger.debug("destinationUrl="+destinationUrl);
+			logger.debug("destinationUrl="+String.valueOf(destinationUrl));
 			
 			// (in case of no match, method will return null but we are ok, there is a relevant resolver for that as well)
 			IShoppingSite  shoppingSite = ShopsProvider.getProvider().getShoppingSite(destinationUrl);
+			logger.debug("shoppingSite="+ String.valueOf(shoppingSite));
 			
-			//----------------------------------
-			// build the redirect url
-			//----------------------------------
-			// [1] get the appropriate RedirectResolver
-			IRedirectResolver redirectResolver = RedirectResolver.getRedirectResolver(shoppingSite);
-			// [2] get the redirect url
-			String redirectUrl = redirectResolver.buildUrl(destinationUrl,subscriber,shoppingSite);
+			String redirectUrl = calcRedirectUrl(destinationUrl,subscriber,shoppingSite);
 			
-			logger.debug("OUT: redirectUrl="+redirectUrl);
+			logger.info("OUT: redirectUrl = "+redirectUrl);
 			try {
 				
 				response.sendRedirect(redirectUrl);
 				return;
 			} catch (IOException e) {
-				// TODO need to handle this error
-				e.printStackTrace();
+				logger.error("Problem in redirecting the user to:"+ redirectUrl,e);
 			}
 			
 		}else{
-			logger.debug("The call is not valid");
-
+			String errorMessage = "missing parameters in request";
+			logger.error("The call is not valid: " + fullPath);
+			// TODO: maybe we want to send redirect back to referrer in this case?
+			try {
+				response.getWriter().write(errorMessage);
+			} catch (IOException e) {
+				// cannot write response, send 
+				logger.error("cannot write error back to user as normal error", e);
+				try {
+					response.sendError(400, errorMessage);
+				} catch (IOException e1) {
+					// cannot write response... ignore
+					logger.error("cannot write error back to user as error header either", e1);
+				}
+			}
 		}
 
+	}
+
+	private String calcRedirectUrl(String destinationUrl, ISubscriber subscriber,IShoppingSite shoppingSite) {
+		String retUrl = destinationUrl;
+		//----------------------------------
+		// build the redirect url
+		//----------------------------------
+		// [1] get the appropriate RedirectResolver
+		IRedirectResolver redirectResolver = RedirectResolver.getRedirectResolver(shoppingSite);
+		// [2] get the redirect url
+		retUrl = redirectResolver.buildUrl(destinationUrl,subscriber,shoppingSite);
+		return retUrl;
 	}
 
 //EXAMPLES:

@@ -17,8 +17,9 @@ public enum RedirectResolver implements IRedirectResolver {
 
 	//--------------------------------------------------------------
 	// list of all the supported redirect resolvers
-	NoShopMatch(new NoShopMatchResolver()),
-	TemplatePlaceHolders(new TemplatePlaceHolderResolver());
+	// to prevent creation of redirect resolvers outside of this enum, the c'tor of these classes is set package friendly and requires to get RedirectResolver.class as its param
+	TemplatePlaceHolders(new TemplatePlaceHolderResolver(RedirectResolver.class)),
+	NoShopMatch(new NoShopMatchResolver(RedirectResolver.class));
 	
 	//--------------------------------------------------------------
 	
@@ -51,5 +52,6 @@ public enum RedirectResolver implements IRedirectResolver {
 		}
 		return redirectResolver;
 	}
-		
+
+			
 }

@@ -34,7 +34,11 @@ public class ShopsProvider {
 		shoppingSites.put("www.nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
 		shoppingSites.put("il.nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
 		shoppingSites.put("nextdirect.com", new ShoppingSite("Next Direct",".nextdirect.com","Next direct description","next.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
-
+		
+		shoppingSites.put("alexandalexa.com", new ShoppingSite("alexandalexa",".alexandalexa.com","alexandalexa description","alexandalexa.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
+		shoppingSites.put("gap.com", new ShoppingSite("gap",".gap.com","gap description","gap.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
+		shoppingSites.put("ebay.com", new ShoppingSite("ebay",".ebay.com","ebayt description","ebay.gif",viglinks,2,2));//in viglinks it written 8% (-25%)
+				
 		// for testing
 		shoppingSites.put("google.com", new ShoppingSite("Google com",".google.com","...description","google.gif",null,2,2));//in viglinks it written 8% (-25%)
 		shoppingSites.put("google.co.il", new ShoppingSite("Google co il",".google.co.il","...description","google.gif",null,2,2));//in viglinks it written 8% (-25%)
@@ -50,6 +54,7 @@ public class ShopsProvider {
 		String manipulatedUrl = null;
 		try {
 			extractedDomainName = UrlAnalyzer.extractDomainName(url);
+			logger.debug("extractedDomainName="+extractedDomainName);
 		} catch (MalformedURLException e) {
 			logger.error("MalformedURL: " + url + " - cannot match shopping site");
 			return null;
@@ -62,6 +67,7 @@ public class ShopsProvider {
 		// this is in order to allow shop mapped domain to be "il.someshop" or "fashion.someshop"
 		manipulatedUrl = extractedDomainName;
 		while(shop == null && (manipulatedUrl = UrlAnalyzer.getUpperDomain(manipulatedUrl)) != null) {
+			logger.debug("manipulatedUrl="+manipulatedUrl);
 			shop = shoppingSites.get(manipulatedUrl);			
 		}
 
@@ -69,12 +75,15 @@ public class ShopsProvider {
 		// this is in order to allow shop mapped domain to be "google.co.il" or just "google"
 		manipulatedUrl = extractedDomainName.replace("www.", "");
 		while(shop == null && (manipulatedUrl = UrlAnalyzer.getDomainWithoutTld(manipulatedUrl)) != null) {
+			logger.debug("manipulatedUrl=" + manipulatedUrl);
 			shop = shoppingSites.get(manipulatedUrl);			
 		}
 
 		if(shop == null) {
 			logger.warn("cannot find matching shop for url: " + url);
 		}
+		
+		
 		return shop;
 
 	}
@@ -82,7 +91,7 @@ public class ShopsProvider {
 	
 }
 
-// old havascript implementation
+// old javascript implementation
 /*
  * var next_obj ={
 		"name":  {DF:"next"},
